@@ -4,14 +4,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import utils.Driver;
+import steps.Hooks;
 
 import java.util.List;
 
-public class AutoLoanCalculatorPage {
+public class CarvanaAutoLoanCalculatorPage {
 
-    public AutoLoanCalculatorPage() {
-        PageFactory.initElements(Driver.getDriver(), this);
+    public CarvanaAutoLoanCalculatorPage() {
+        PageFactory.initElements(Hooks.driver, this);
     }
 
     @FindBy(css = "div[class='loan-calculator-display-value']")
