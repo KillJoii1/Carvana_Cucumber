@@ -17,7 +17,6 @@ import utils.Waiter;
 
 public class Hooks {
     public static WebDriver driver;
-    public static WebDriverWait wait;
     public static CarvanaHomePage carvanaHomePage;
     public static CarvanaSellTradePage carvanaSellTradePage;
     public static CarvanaCarFinderPage carvanaCarFinderPage;
@@ -26,7 +25,6 @@ public class Hooks {
     @Before
     public void setup() {
         driver = Driver.getDriver();
-        wait = Waiter.getWaiter();
         carvanaHomePage = new CarvanaHomePage();
         carvanaSellTradePage = new CarvanaSellTradePage();
         carvanaCarFinderPage = new CarvanaCarFinderPage();
@@ -46,7 +44,6 @@ public class Hooks {
             e.printStackTrace();
         } finally {
             Driver.quitDriver();
-            Waiter.quitWaiter();
         }
     }
 }

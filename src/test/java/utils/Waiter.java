@@ -1,27 +1,13 @@
 package utils;
 
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import steps.Hooks;
 
 public class Waiter {
-    private static WebDriverWait waiter;
-
-    private Waiter() {}
-
-    public static WebDriverWait getWaiter() {
-        if (waiter == null) {
-            waiter = new WebDriverWait(Hooks.driver, Long.parseLong(ConfigReader.getProperty("explicitWait")));
-        }
-        return waiter;
-    }
-
-    public static void quitWaiter() {
-        waiter = null;
-    }
     /**
-     * For debugging purposes only!
+     *   Hard pauses meant for debugging only.
+     *   Check usages if there exist any use cases that can be removed.
      */
     public static void pause(double seconds){
         try {
@@ -31,21 +17,29 @@ public class Waiter {
         }
     }
 
-    public static WebElement forTextVisibility(WebElement element){
-        waiter.until(ExpectedConditions.visibilityOf(element));
-        return element;
+    public static void forTextVisibility(WebDriver driver, WebElement element){
+        new WebDriverWait(driver, Long.parseLong(ConfigReader.getProperty("explicitWait")))
+                .until(ExpectedConditions.visibilityOf(element));
     }
 
-    public static WebElement forClickable(WebElement element) {
-        waiter.until(ExpectedConditions.elementToBeClickable(element));
-        return element;
+    /**
+     * Used as an alternative to the method above that uses wait times from the 'config.properties'. This method is for
+     * situations where driver is loaded landing page but has element visibility blocked momentarily.
+     * Ex. Second scenario in 'carvana.feature' navigates webdriver to 'VIN landing page' that animates loading of page,
+     * obstructing the full page loaded elements, causing NoSuchElementExceptions.
+     */
+    public static void forTextVisibility(WebDriver driver, WebElement element, long seconds){
+        new WebDriverWait(driver, seconds)
+                .until(ExpectedConditions.visibilityOf(element));
     }
 
-    public static void isHoverable(WebElement element) {
-        waiter.until(ExpectedConditions.elementToBeClickable(element));
+    public static void forClickable(WebDriver driver, WebElement element) {
+        new WebDriverWait(driver, Long.parseLong(ConfigReader.getProperty("explicitWait")))
+                .until(ExpectedConditions.elementToBeClickable(element));
     }
 
-    public static void forUrl(String url) {
-        waiter.until(ExpectedConditions.urlToBe(url));
+    public static void forUrl(WebDriver driver, String url) {
+        new WebDriverWait(driver, Long.parseLong(ConfigReader.getProperty("explicitWait")))
+                .until(ExpectedConditions.urlToBe(url));
     }
 }

@@ -1,3 +1,4 @@
+@Regression
 Feature: Carvana Tools Functionalities
 
   Scenario: Validate CAR FINDER menu item
@@ -12,7 +13,6 @@ Feature: Carvana Tools Functionalities
     And user should see "WHAT IS MOST IMPORTANT TO YOU IN YOUR NEXT CAR?" text
     And user should see "Select up to 4 in order of importance" text
 
-    #updated vin number
   Scenario: Validate SELL/TRADE invalid vin search
     Given user is on "https://www.carvana.com/"
     When user clicks on "SELL/TRADE" menu item
@@ -24,12 +24,14 @@ Feature: Carvana Tools Functionalities
     And user clicks on "GET MY OFFER" button
     Then user should see "We couldn’t find that VIN. Please check your entry and try again." text
 
+  @Smoke
   Scenario: Validate AUTO LOAN CALCULATOR under FINANCING menu item
     Given user is on "https://www.carvana.com/"
     When user hovers over on "FINANCING" menu item
     And user clicks on "AUTO LOAN CALCULATOR" menu item
-    When user enters "Cost of Car I want" as "10,000"
-    And user selects "What’s Your credit Score?" as "Excellent: 780"
-    And user selects "Choose Your Loan Terms" as "60 Months"
-    And user enters "What is Your Down Payment?" as "1,500"
+    Then user should be navigated to "https://www.carvana.com/auto-loan-calculator"
+    When user enters "10,000" for "Cost of Car I want"
+    And user selects "Excellent: 780" for "What's Your Credit Score?"
+    And user selects "60 Months" for "Choose Your Loan Term"
+    And user enters "1,500" for "What is Your Down Payment?"
     Then user should see the monthly payment as "167.00"

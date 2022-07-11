@@ -1,11 +1,15 @@
 package pages;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import steps.Hooks;
+import utils.ConfigReader;
 import utils.Waiter;
 
 import java.util.List;
@@ -14,43 +18,53 @@ public class CarvanaHomePage {
     public CarvanaHomePage() {
         PageFactory.initElements(Hooks.driver, this);
     }
+    private final int defaultStaleCheckCounter = Integer.parseInt(ConfigReader.getProperty("staleCheckCounter"));
+    public int staleCheckCounter = defaultStaleCheckCounter;
 
-//    @FindAll({
-//            @FindBy(css = "div[data-qa='header-items'] a"),
-//            @FindBy(css = "div[data-cv-test='headerFinanceDropdown']"),
-//            @FindBy(css = "a[data-cv-test*='headerFinance']")
-//    })
     @FindBy(css = "div[data-qa='header-items'] a")
     public List<WebElement> headerItems;
 
     public void clickHeaderItem(String itemText) {
-        for (WebElement e : headerItems) {
-            if (e.getText().equals(itemText)) {
-                Waiter.forClickable(e).click();
-                break;
+        if (staleCheckCounter == 0) throw new RuntimeException("Stale check failed!");
+        for (WebElement element : headerItems) {
+            try {
+                if (element.getText().equals(itemText)) {
+                    Waiter.forClickable(Hooks.driver, element);
+                    element.click();
+                    staleCheckCounter = defaultStaleCheckCounter;
+                    break;
+                }
+            } catch (StaleElementReferenceException e) {
+                resolveListStale();
+                staleCheckCounter--;
+                clickHeaderItem(itemText);
             }
         }
     }
 
     public void hoverHeaderItem(String itemText) {
-        for (WebElement e : headerItems) {
-            if (e.getText().equals(itemText)) {
-                Waiter.isHoverable(e);
-                new Actions(Hooks.driver).moveToElement(e).perform();
-                break;
+        if (staleCheckCounter == 0) throw new RuntimeException("Stale check failed!");
+        for (WebElement element : headerItems) {
+            try {
+                if (element.getText().equals(itemText)) {
+                    Waiter.forClickable(Hooks.driver, element);
+                    new Actions(Hooks.driver).moveToElement(element).perform();
+                    staleCheckCounter = defaultStaleCheckCounter;
+                    break;
+                }
+            } catch (StaleElementReferenceException e) {
+                resolveListStale();
+                staleCheckCounter--;
+                hoverHeaderItem(itemText);
             }
         }
     }
 
-//    @FindBy(css = "a[data-cv-test*='headerFinance']")
-//    public List<WebElement> financeItems;
-//
-//    public void clickFinanceItem(String itemText) {
-//        for (WebElement e : financeItems) {
-//            if (e.getText().equals(itemText)) {
-//                e.click();
-//                break;
-//            }
-//        }
-//    }
+    /**
+     *  A hardcoded solution to getting the list of headerItems to refresh when we catch StaleElementReferenceException
+     */
+    public void resolveListStale() {
+        new WebDriverWait(Hooks.driver, Long.parseLong(ConfigReader.getProperty("explicitWait")))
+                .until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("div[data-qa='header-items'] a")));
+    }
 }

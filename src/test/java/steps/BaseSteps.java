@@ -14,7 +14,7 @@ public class BaseSteps {
 
     @Then("user should be navigated to {string}")
     public void userShouldBeNavigatedTo(String url) {
-        Waiter.forUrl(url);
+        Waiter.forUrl(Hooks.driver, url);
         Assert.assertEquals(url, Hooks.driver.getCurrentUrl());
     }
 }

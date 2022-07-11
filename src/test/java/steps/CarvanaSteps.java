@@ -53,7 +53,8 @@ public class CarvanaSteps {
                 Assert.assertEquals(text, carvanaCarFinderPage.offerSubHeader.getText());
                 break;
             case "We couldn’t find that VIN. Please check your entry and try again.":
-                Assert.assertEquals(text, Waiter.forTextVisibility(carvanaSellTradePage.invalidVinText).getText());
+                Waiter.forTextVisibility(Hooks.driver, carvanaSellTradePage.invalidVinText, 10);
+                Assert.assertEquals(text, carvanaSellTradePage.invalidVinText.getText());
                 break;
             default: throw new NotFoundException("Feature file text was invalid!!");
         }
@@ -63,7 +64,8 @@ public class CarvanaSteps {
     public void userShouldSeeLink(String linkText) {
         switch (linkText) {
             case "TRY CAR FINDER":
-                Assert.assertEquals(linkText, Waiter.forTextVisibility(carvanaCarFinderPage.tryCarFinderLink).getText());
+                Waiter.forTextVisibility(Hooks.driver, carvanaCarFinderPage.tryCarFinderLink);
+                Assert.assertEquals(linkText, carvanaCarFinderPage.tryCarFinderLink.getText());
                 break;
             default: throw new NotFoundException("Feature file link text was invalid!!");
         }
@@ -73,7 +75,8 @@ public class CarvanaSteps {
     public void userClicksOnLink(String link) {
         switch (link) {
             case "TRY CAR FINDER":
-                Waiter.forClickable(carvanaCarFinderPage.tryCarFinderLink).click();
+                Waiter.forClickable(Hooks.driver, carvanaCarFinderPage.tryCarFinderLink);
+                carvanaCarFinderPage.tryCarFinderLink.click();
                 break;
             default: throw new NotFoundException("Feature file link text was invalid!!");
         }
@@ -83,10 +86,12 @@ public class CarvanaSteps {
     public void userClicksOnButton(String buttonText) {
         switch (buttonText) {
             case "VIN":
-                Waiter.forClickable(carvanaSellTradePage.vinButton).click();
+                Waiter.forClickable(Hooks.driver, carvanaSellTradePage.vinButton);
+                carvanaSellTradePage.vinButton.click();
                 break;
             case "GET MY OFFER":
-                Waiter.forClickable(carvanaSellTradePage.getOfferButton).click();
+                Waiter.forClickable(Hooks.driver, carvanaSellTradePage.getOfferButton);
+                carvanaSellTradePage.getOfferButton.click();
                 break;
             default: throw new NotFoundException("Feature file button text was invalid!!");
         }
@@ -108,29 +113,31 @@ public class CarvanaSteps {
         }
     }
 
-    @And("user selects {string} as {string}")
-    public void userSelectsAs(String dropdownText, String value) {
+    @And("user selects {string} for {string}")
+    public void userSelectsFor(String value, String dropdownText) {
         switch  (dropdownText) {
-            case "What’s Your credit Score?":
-                DropDownHandler.selectOptionByText(Waiter.forTextVisibility(carvanaAutoLoanCalculatorPage.creditScoreField.get(1)), value);
+            case "What's Your Credit Score?":
+                Assert.assertEquals(dropdownText, carvanaAutoLoanCalculatorPage.creditScoreLabel.getText());
+                DropDownHandler.selectOptionByText(carvanaAutoLoanCalculatorPage.creditScoreInput, value);
                 break;
-            case "Choose Your Loan Terms":
-                DropDownHandler.selectOptionByText(Waiter.forTextVisibility(carvanaAutoLoanCalculatorPage.loanTermField.get(1)), value);
+            case "Choose Your Loan Term":
+                Assert.assertEquals(dropdownText, carvanaAutoLoanCalculatorPage.loanTermLabel.getText());
+                DropDownHandler.selectOptionByText(carvanaAutoLoanCalculatorPage.loanTermInput, value);
                 break;
             default: throw new NotFoundException("Feature file field or text was invalid!!");
         }
     }
 
-    @And("user enters {string} as {string}")
-    public void userEntersAs(String fieldText, String value) {
+    @And("user enters {string} for {string}")
+    public void userEntersFor(String value, String fieldText) {
         switch  (fieldText) {
             case "Cost of Car I want":
-                Assert.assertTrue(Waiter.forTextVisibility(carvanaAutoLoanCalculatorPage.carCostField.get(1)).isEnabled());
-                carvanaAutoLoanCalculatorPage.carCostField.get(1).sendKeys(value);
+                Assert.assertEquals(fieldText, carvanaAutoLoanCalculatorPage.carCostLabel.getText());
+                carvanaAutoLoanCalculatorPage.carCostInput.sendKeys(value);
                 break;
             case "What is Your Down Payment?":
-                Assert.assertTrue(Waiter.forTextVisibility(carvanaAutoLoanCalculatorPage.downPaymentField.get(1)).isEnabled());
-                carvanaAutoLoanCalculatorPage.downPaymentField.get(1).sendKeys(value);
+                Assert.assertEquals(fieldText, carvanaAutoLoanCalculatorPage.downPaymentLabel.getText());
+                carvanaAutoLoanCalculatorPage.downPaymentInput.sendKeys(value);
                 break;
             default: throw new NotFoundException("Feature file field text was invalid!!");
         }
