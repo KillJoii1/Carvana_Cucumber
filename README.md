@@ -5,8 +5,6 @@ The framework is based on:
     - Selenium -> version: 3.141.59
     - Cucumber-java and Cucumber-junit -> version: 4.20
 
-Dependencies are handled with Maven through the 'pom.xml' on root.
-
 
 NOTES:
     
